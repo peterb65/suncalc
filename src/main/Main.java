@@ -1,11 +1,13 @@
 package main;
 
+import java.io.PrintWriter;
 import java.text.DateFormat;
 import java.util.Calendar;
 
 import org.apache.commons.cli.BasicParser;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
@@ -14,6 +16,7 @@ import com.luckycatlabs.sunrisesunset.dto.Location;
 
 public class Main {
 	CommandLine cmd = null;
+	Options options = new Options();
 
 	public static void main(String[] args) {
 		new Main().doIt(args);
@@ -22,7 +25,6 @@ public class Main {
 
 	private void doIt(String[] args) {
 		CommandLineParser parser = new BasicParser();
-		Options options = new Options();
 		options.addOption("t", false,  "Output times for sunrise and sunset");
 		options.addOption("r", false, "Output time for sunrise");
 		options.addOption("s", false, "Output time for sunset");
@@ -34,9 +36,19 @@ public class Main {
 			e.printStackTrace();
 			System.exit(-1);
 		}
+		
+		if (!checkArgs(cmd)) {
+			printUsage();
+			System.exit(0);
+		}
+		
 	    if (cmd.hasOption("t")) printRiseAndSetTimes();
 	    if (cmd.hasOption("r")) printRiseTime();
 	    if (cmd.hasOption("s")) printSetTime();
+	}
+
+	private boolean checkArgs(CommandLine cmd) {
+		return cmd.hasOption("t") || cmd.hasOption("r") || cmd.hasOption("s");
 	}
 
 	private void printSetTime() {
@@ -68,11 +80,11 @@ public class Main {
 		return calculator;
 	}
 
-	private static void printUsage() {
-		System.out.println(
-			"arguments: \n" +
-			"           -t : print sunrise and sunset\n" + 
-			"           -r : print sunrise\n" + 
-			"           -s : print sunset");
+	private void printUsage() {
+		HelpFormatter help = new HelpFormatter();
+		PrintWriter out = new PrintWriter(System.out);
+		help.printUsage(out, 40, "suncalc", options);
+		out.flush();
+		out.close();
 	}
 }
