@@ -14,6 +14,11 @@
           <target>1.7</target>
         </configuration>
       </plugin>
+      
+      <!-- 
+      This will create a runnable jar file with all dependencies included within the file.
+      Invoked with the following command line: mvn compile assembly:single
+      -->
 	    <plugin>
 	      <artifactId>maven-assembly-plugin</artifactId>
 	      <configuration>
